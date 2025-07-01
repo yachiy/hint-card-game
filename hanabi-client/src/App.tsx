@@ -4,6 +4,32 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Board from './components/Board';
 import { GameState } from './types';
 
+const generateStars = () => {
+  const stars = [];
+  for (let i = 0; i < 100; i++) { // 100個の星を生成
+    const size = Math.random() * 3 + 1; // 1pxから4px
+    const top = Math.random() * 100;
+    const left = Math.random() * 100;
+    const duration = Math.random() * 5 + 5; // 5秒から10秒
+    const delay = Math.random() * 5; // 0秒から5秒
+    stars.push(
+      <div
+        key={i}
+        className="star"
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          top: `${top}vh`,
+          left: `${left}vw`,
+          animationDuration: `${duration}s`,
+          animationDelay: `${delay}s`,
+        }}
+      />
+    );
+  }
+  return stars;
+};
+
 function App() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [gameState, setGameState] = useState<GameState | null>(null);
@@ -13,36 +39,14 @@ function App() {
   const [availableGames, setAvailableGames] = useState<{ id: string; name: string }[]>([]);
   const [inputGameId, setInputGameId] = useState<string>('');
   const [playerName, setPlayerName] = useState<string>('');
-
-  // 星を生成する関数
-  const generateStars = () => {
-    const stars = [];
-    for (let i = 0; i < 100; i++) { // 100個の星を生成
-      const size = Math.random() * 3 + 1; // 1pxから4px
-      const top = Math.random() * 100;
-      const left = Math.random() * 100;
-      const duration = Math.random() * 5 + 5; // 5秒から10秒
-      const delay = Math.random() * 5; // 0秒から5秒
-      stars.push(
-        <div
-          key={i}
-          className="star"
-          style={{
-            width: `${size}px`,
-            height: `${size}px`,
-            top: `${top}vh`,
-            left: `${left}vw`,
-            animationDuration: `${duration}s`,
-            animationDelay: `${delay}s`,
-          }}
-        />
-      );
-    }
-    return stars;
-  };
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    const newWs = new WebSocket('ws://localhost:8080');
+    if (!isAuthenticated) return;
+
+    const newWs = new WebSocket(`ws://localhost:8080?username=${username}&password=${password}`);
 
     newWs.onopen = () => {
       console.log('Connected to WebSocket server');
@@ -86,10 +90,13 @@ function App() {
       setMyPlayerId(null);
       setGameId(null);
       setGameDisplayName(null);
+      setIsAuthenticated(false); // 認証状態をリセット
     };
 
     newWs.onerror = (error) => {
       console.error('WebSocket error:', error);
+      alert('認証に失敗しました。ユーザー名とパスワードを確認してください。');
+      setIsAuthenticated(false); // 認証状態をリセット
     };
 
     setWs(newWs);
@@ -97,7 +104,43 @@ function App() {
     return () => {
       newWs.close();
     };
-  }, []);
+  }, [isAuthenticated, username, password]); // 認証状態と認証情報が変更されたら再接続
+
+  const handleAuthenticate = () => {
+    if (username.trim() === '' || password.trim() === '') {
+      alert('ユーザー名とパスワードを入力してください。');
+      return;
+    }
+    setIsAuthenticated(true);
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="App">
+        <div className="stars">{generateStars()}</div>
+        <h1>Hanabi - ログイン</h1>
+        <div>
+          <h2>ユーザー名</h2>
+          <input
+            type="text"
+            placeholder="ユーザー名"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
+          <h2>パスワード</h2>
+          <input
+            type="password"
+            placeholder="パスワード"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <button onClick={handleAuthenticate}>ログイン</button>
+      </div>
+    );
+  }
 
   const sendAction = (type: string, payload: any) => {
     if (ws) {

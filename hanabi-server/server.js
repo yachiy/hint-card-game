@@ -1,7 +1,27 @@
+require('dotenv').config();
 const WebSocket = require('ws');
 const Game = require('./game');
 
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({
+  port: 8080,
+  verifyClient: (info, done) => {
+    const authHeader = info.req.headers.authorization;
+    if (!authHeader) {
+      done(false, 401, 'Unauthorized');
+      return;
+    }
+
+    const base64Credentials = authHeader.split(' ')[1];
+    const credentials = Buffer.from(base64Credentials, 'base64').toString('utf8');
+    const [username, password] = credentials.split(':');
+
+    if (username === process.env.AUTH_USER && password === process.env.AUTH_PASSWORD) {
+      done(true);
+    } else {
+      done(false, 401, 'Unauthorized');
+    }
+  }
+});
 
 const games = new Map(); // Map to store active games: gameId -> Game instance
 const clientToGameMap = new Map(); // Map to store which client belongs to which game: ws -> gameId
