@@ -8,35 +8,57 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
+  const cardColors: { [key: string]: string } = {
+    red: '#FF4136',
+    green: '#2ECC40',
+    blue: '#0074D9',
+    yellow: '#FFDC00',
+    white: '#F0F0F0',
+  };
+
   const cardStyle: React.CSSProperties = {
-    border: isSelected ? '3px solid blue' : '1px solid black',
-    borderRadius: '5px',
-    width: '80px',
-    height: '120px',
+    border: isSelected ? '3px solid #0074D9' : '1px solid #333',
+    borderRadius: '8px',
+    width: '90px',
+    height: '130px',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    margin: '5px',
-    backgroundColor: isOwnHand ? 'grey' : card.suit,
-    color: card.suit === 'yellow' || card.suit === 'white' ? 'black' : 'white',
+    margin: '8px',
+    backgroundColor: isOwnHand ? '#666' : cardColors[card.suit],
+    color: isOwnHand ? 'white' : (card.suit === 'yellow' || card.suit === 'white' ? '#333' : 'white'),
     cursor: isOwnHand ? 'pointer' : 'default',
-    boxShadow: (card.hintedSuit || card.hintedRank) ? '0 0 10px 5px gold' : 'none',
+    boxShadow: (card.hintedSuit || card.hintedRank) ? '0 0 12px 6px gold' : 'none',
     position: 'relative',
+    fontSize: '2.5em',
+    fontWeight: 'bold',
+    textShadow: isOwnHand ? 'none' : '1px 1px 2px rgba(0,0,0,0.5)',
+  };
+
+  const hintStyle: React.CSSProperties = {
+    position: 'absolute',
+    fontSize: '0.7em',
+    fontWeight: 'normal',
+    backgroundColor: 'rgba(0,0,0,0.7)', /* 背景を少し濃く */
+    color: card.suit === 'yellow' || card.suit === 'white' ? '#333' : 'white', /* ヒント文字色を調整 */
+    padding: '2px 5px',
+    borderRadius: '3px',
+    zIndex: 1,
   };
 
   return (
     <div style={cardStyle}>
       {isOwnHand ? (
         <>
-          {card.hintedSuit && <div style={{ position: 'absolute', top: '5px', fontSize: '0.8em' }}>{card.suit}</div>}
-          {card.hintedRank && <div style={{ position: 'absolute', bottom: '5px', fontSize: '0.8em' }}>{card.rank}</div>}
+          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px' }}>{card.suit}</div>}
+          {card.hintedRank && <div style={{ ...hintStyle, bottom: '5px', right: '5px' }}>{card.rank}</div>}
         </>
       ) : (
         <>
-          {card.hintedSuit && <div style={{ position: 'absolute', top: '5px', fontSize: '0.8em' }}>{card.suit}</div>}
-          {card.hintedRank && <div style={{ position: 'absolute', bottom: '5px', fontSize: '0.8em' }}>{card.rank}</div>}
-          <h2>{card.rank}</h2>
+          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px' }}>{card.suit}</div>}
+          {card.hintedRank && <div style={{ ...hintStyle, bottom: '5px', right: '5px' }}>{card.rank}</div>}
+          <div style={{ marginTop: 'auto', marginBottom: 'auto' }}>{card.rank}</div>
         </>
       )}
     </div>

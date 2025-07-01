@@ -1,38 +1,102 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(to bottom, #0a0a2a, #2a0a4a);
+  min-height: 100vh;
+  color: #FFFFFF; /* 純粋な白に変更 */
+  position: relative;
+  overflow-y: auto; /* スクロールを許可 */
+}
+
 .App {
   text-align: center;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+  text-shadow: none; /* テキストシャドウを削除 */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* その他の要素にもテキストシャドウを適用 */
+h1, h2, h3, h4, h5, p, li {
+  color: #FFFFFF !important; /* すべてのヘッダーとテキストを強制的に白に */
+  text-shadow: none; /* テキストシャドウを削除 */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+select {
+  color: #333; /* セレクトボックスの文字色を黒に */
+  background-color: #FFFFFF; /* 背景色を白に */
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  text-shadow: none; /* テキストシャドウを削除 */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+select option {
+  color: #333; /* オプションの文字色を黒に */
 }
 
-.App-link {
-  color: #61dafb;
+button {
+  color: #333; /* ボタンの文字色を暗く */
+  text-shadow: none; /* テキストシャドウを削除 */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+h2 {
+  color: #FFFFFF !important; /* h2要素を強制的に白に */
+  text-shadow: none; /* テキストシャドウを削除 */
+}
+
+input {
+  color: #333; /* 入力文字色を黒に */
+  background-color: #FFFFFF; /* 背景色を白に */
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  text-shadow: none; /* テキストシャドウを削除 */
+}
+
+input::placeholder {
+  color: #666; /* プレースホルダーの文字色を調整 */
+}
+
+/* コンテンツ領域の背景 */
+.App > div {
+  background-color: rgba(0, 0, 0, 0.4); /* 半透明の背景 */
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* 星のエフェクト */
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1; /* z-indexを負の値に設定 */
+  display: block; /* 再表示 */
+}
+
+.star {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: twinkle linear infinite;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.5); }
+}
+
+/* App.cssの既存のスタイルは削除または調整 */
+.App-logo, .App-header, .App-link, @keyframes App-logo-spin {
+  display: none;
 }

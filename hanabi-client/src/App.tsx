@@ -14,6 +14,33 @@ function App() {
   const [inputGameId, setInputGameId] = useState<string>('');
   const [playerName, setPlayerName] = useState<string>('');
 
+  // 星を生成する関数
+  const generateStars = () => {
+    const stars = [];
+    for (let i = 0; i < 100; i++) { // 100個の星を生成
+      const size = Math.random() * 3 + 1; // 1pxから4px
+      const top = Math.random() * 100;
+      const left = Math.random() * 100;
+      const duration = Math.random() * 5 + 5; // 5秒から10秒
+      const delay = Math.random() * 5; // 0秒から5秒
+      stars.push(
+        <div
+          key={i}
+          className="star"
+          style={{
+            width: `${size}px`,
+            height: `${size}px`,
+            top: `${top}vh`,
+            left: `${left}vw`,
+            animationDuration: `${duration}s`,
+            animationDelay: `${delay}s`,
+          }}
+        />
+      );
+    }
+    return stars;
+  };
+
   useEffect(() => {
     const newWs = new WebSocket('ws://localhost:8080');
 
@@ -46,6 +73,7 @@ function App() {
           setGameState(null);
           setMyPlayerId(null);
           setGameId(null);
+          setGameDisplayName(null);
           break;
         default:
           console.log('Unknown message type:', message.type, message.payload);
@@ -108,6 +136,7 @@ function App() {
   if (!gameId) {
     return (
       <div className="App">
+        <div className="stars">{generateStars()}</div>
         <h1>Hanabi - ロビー</h1>
         <p>Your Player ID: {myPlayerId}</p>
         <div>
@@ -116,7 +145,10 @@ function App() {
             type="text"
             placeholder="あなたの名前"
             value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
+            onChange={(e) => {
+              console.log('Player name input changed:', e.target.value);
+              setPlayerName(e.target.value);
+            }}
           />
         </div>
         <div>
@@ -138,7 +170,7 @@ function App() {
           {availableGames.length === 0 ? (
             <p>利用可能なゲームはありません。</p>
           ) : (
-            <ul>
+            <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
               {availableGames.map((game) => (
                 <li key={game.id}>
                   {game.name} ({game.id}) <button onClick={() => setInputGameId(game.id)}>選択</button>
@@ -154,10 +186,11 @@ function App() {
   if (!gameState || !gameState.hasStarted) {
     return (
       <div className="App">
+        <div className="stars">{generateStars()}</div>
         <h1>Hanabi - {gameDisplayName} ({gameId})</h1>
         <p>Your Player ID: {myPlayerId}</p>
         <h2>参加プレイヤー:</h2>
-        <ul>
+        <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
           {gameState?.players.map(p => <li key={p.id}>{p.name}</li>)}
         </ul>
         {gameState && gameState.players.length >= 2 && gameState.hostId === myPlayerId && (
@@ -178,6 +211,7 @@ function App() {
 
   return (
     <div className="App">
+      <div className="stars">{generateStars()}</div>
       <h1>Hanabi - {gameDisplayName} ({gameId})</h1>
       <p>Your Player ID: {myPlayerId}</p>
       {gameState && gameState.hostId === myPlayerId && (
@@ -189,3 +223,4 @@ function App() {
 }
 
 export default App;
+
