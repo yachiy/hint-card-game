@@ -42,6 +42,30 @@ function broadcastGameState(gameId) {
   });
 }
 
+// Function to clean up old games
+function cleanupOldGames() {
+  const now = Date.now();
+  const ONE_HOUR = 60 * 60 * 1000; // 1 hour in milliseconds
+  const TWO_HOURS = 2 * ONE_HOUR; // 2 hours in milliseconds
+
+  for (const [gameId, game] of games.entries()) {
+    if (now - game.lastActivity > TWO_HOURS) {
+      console.log(`Cleaning up old game: ${gameId}`);
+      // Notify all clients in this game that it's disbanded due to inactivity
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN && clientToGameMap.get(client) === gameId) {
+          client.send(JSON.stringify({ type: 'gameDisbanded', payload: 'Game disbanded due to inactivity.' }));
+          clientToGameMap.delete(client);
+        }
+      });
+      games.delete(gameId);
+    }
+  }
+}
+
+// Run cleanup every hour
+setInterval(cleanupOldGames, ONE_HOUR);
+
 wss.on('connection', ws => {
   const playerId = nextPlayerId++;
   clientToPlayerIdMap.set(ws, playerId);

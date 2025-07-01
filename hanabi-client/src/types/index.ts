@@ -27,4 +27,5 @@ export interface GameState {
   hasStarted: boolean;
   hostId: number;
   displayName: string;
+  lastActivity: number;
 }
