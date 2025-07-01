@@ -25,4 +25,5 @@ export interface GameState {
   stormTokens: number;
   currentPlayerId: number | null;
   hasStarted: boolean;
+  hostId: number;
 }

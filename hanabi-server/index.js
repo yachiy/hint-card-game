@@ -40,7 +40,7 @@ wss.on('connection', ws => {
     switch (type) {
       case 'createGame':
         const newGameId = `game-${nextGameId++}`;
-        game = new Game(newGameId);
+        game = new Game(newGameId, playerId); // Pass hostId
         games.set(newGameId, game);
         clientToGameMap.set(ws, newGameId);
         game.addPlayer(playerId, payload.playerName);
@@ -59,10 +59,10 @@ wss.on('connection', ws => {
         }
         break;
       case 'startGame':
-        if (game && game.startGame()) {
+        if (game && game.hostId === playerId && game.startGame()) {
           broadcastGameState(gameId);
         } else {
-          ws.send(JSON.stringify({ type: 'error', payload: 'Failed to start game.' }));
+          ws.send(JSON.stringify({ type: 'error', payload: 'Failed to start game. Only the host can start the game.' }));
         }
         break;
       case 'playCard':
@@ -74,10 +74,25 @@ wss.on('connection', ws => {
       case 'discardCard':
         if (game) game.discardCard(playerId, payload.cardId);
         break;
+      case 'disbandGame':
+        if (game && game.hostId === playerId) {
+          // Notify all clients in this game that it's disbanded
+          wss.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN && clientToGameMap.get(client) === gameId) {
+              client.send(JSON.stringify({ type: 'gameDisbanded' }));
+              clientToGameMap.delete(client); // Remove client from game mapping
+            }
+          });
+          games.delete(gameId); // Remove the game instance
+          console.log(`Game ${gameId} disbanded by host ${playerId}`);
+        } else {
+          ws.send(JSON.stringify({ type: 'error', payload: 'Failed to disband game. Only the host can disband the game.' }));
+        }
+        break;
       default:
         console.log(`Unknown message type: ${type}`);
     }
-    if (gameId) {
+    if (gameId && games.has(gameId)) { // Only broadcast if game still exists
       broadcastGameState(gameId);
     }
   });

@@ -40,6 +40,11 @@ function App() {
           console.error('Server error:', message.payload);
           alert(message.payload);
           break;
+        case 'gameDisbanded':
+          setGameState(null);
+          setMyPlayerId(null);
+          setGameId(null);
+          break;
         default:
           console.log('Unknown message type:', message.type, message.payload);
       }
@@ -89,6 +94,12 @@ function App() {
 
   const handleStartGame = () => {
     sendAction('startGame', {});
+  };
+
+  const handleDisbandGame = () => {
+    if (window.confirm('本当にゲームを解散しますか？')) {
+      sendAction('disbandGame', {});
+    }
   };
 
   if (!gameId) {
@@ -146,11 +157,17 @@ function App() {
         <ul>
           {gameState?.players.map(p => <li key={p.id}>{p.name}</li>)}
         </ul>
-        {gameState && gameState.players.length >= 2 && (
+        {gameState && gameState.players.length >= 2 && gameState.hostId === myPlayerId && (
           <button onClick={handleStartGame}>ゲームを開始</button>
+        )}
+        {gameState && gameState.hostId === myPlayerId && (
+          <button onClick={handleDisbandGame}>ゲームを解散</button>
         )}
         {gameState && gameState.players.length < 2 && (
           <p>ゲームを開始するには2人以上のプレイヤーが必要です。</p>
+        )}
+        {gameState && gameState.hostId !== myPlayerId && (
+          <p>ホストのみがゲームを開始できます。</p>
         )}
       </div>
     );
@@ -160,6 +177,9 @@ function App() {
     <div className="App">
       <h1>Hanabi - ゲームID: {gameId}</h1>
       <p>Your Player ID: {myPlayerId}</p>
+      {gameState && gameState.hostId === myPlayerId && (
+        <button onClick={handleDisbandGame}>ゲームを解散</button>
+      )}
       <Board gameState={gameState} sendAction={sendAction} myPlayerId={myPlayerId} />
     </div>
   );
