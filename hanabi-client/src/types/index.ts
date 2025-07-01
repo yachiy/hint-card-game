@@ -16,11 +16,13 @@ export interface Player {
 }
 
 export interface GameState {
+  gameId: string;
   players: Player[];
-  deck: Card[];
+  deckSize: number;
   discardPile: Card[];
   playedCards: Record<Suit, number>;
   hintTokens: number;
   stormTokens: number;
-  currentPlayerId: number;
+  currentPlayerId: number | null;
+  hasStarted: boolean;
 }

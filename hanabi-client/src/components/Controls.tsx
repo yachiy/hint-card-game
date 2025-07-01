@@ -6,7 +6,7 @@ interface ControlsProps {
   onGiveHint: (playerId: number, hintType: 'suit' | 'rank', value: string | number) => void;
   onDiscardCard: () => void;
   players: Player[];
-  currentPlayerId: number;
+  currentPlayerId: number | null;
   hintTokens: number;
 }
 

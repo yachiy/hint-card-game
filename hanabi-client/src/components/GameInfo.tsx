@@ -12,7 +12,7 @@ const GameInfo: React.FC<GameInfoProps> = ({ gameState }) => {
       <h4>ゲーム情報</h4>
       <p>ヒントトークン: {gameState.hintTokens}</p>
       <p>ストームトークン: {gameState.stormTokens}</p>
-      <p>山札の残り枚数: {gameState.deck.length}</p>
+      <p>山札の残り枚数: {gameState.deckSize}</p>
       <div>
         <h5>プレイされたカード</h5>
         <div style={{ display: 'flex', gap: '10px' }}>
