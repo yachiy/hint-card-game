@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "serve -s build",
-    "dev": "concurrently "npm start" "npm --prefix ../hanabi-server start"",
+    "dev": "concurrently 'npm start' 'npm --prefix ../hanabi-server start'",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
