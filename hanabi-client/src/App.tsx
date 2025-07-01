@@ -11,6 +11,7 @@ function App() {
   const [gameId, setGameId] = useState<string | null>(null);
   const [availableGames, setAvailableGames] = useState<string[]>([]);
   const [inputGameId, setInputGameId] = useState<string>('');
+  const [playerName, setPlayerName] = useState<string>('');
 
   useEffect(() => {
     const newWs = new WebSocket('ws://localhost:8080');
@@ -69,12 +70,20 @@ function App() {
   };
 
   const handleCreateGame = () => {
-    sendAction('createGame', {});
+    if (playerName.trim() === '') {
+      alert('プレイヤー名を入力してください。');
+      return;
+    }
+    sendAction('createGame', { playerName });
   };
 
   const handleJoinGame = () => {
+    if (playerName.trim() === '') {
+      alert('プレイヤー名を入力してください。');
+      return;
+    }
     if (inputGameId) {
-      sendAction('joinGame', { gameId: inputGameId });
+      sendAction('joinGame', { gameId: inputGameId, playerName });
     }
   };
 
@@ -87,6 +96,15 @@ function App() {
       <div className="App">
         <h1>Hanabi - ロビー</h1>
         <p>Your Player ID: {myPlayerId}</p>
+        <div>
+          <h2>プレイヤー名</h2>
+          <input
+            type="text"
+            placeholder="あなたの名前"
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+          />
+        </div>
         <div>
           <h2>ゲームを作成</h2>
           <button onClick={handleCreateGame}>新しいゲームを作成</button>

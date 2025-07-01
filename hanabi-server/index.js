@@ -43,14 +43,14 @@ wss.on('connection', ws => {
         game = new Game(newGameId);
         games.set(newGameId, game);
         clientToGameMap.set(ws, newGameId);
-        game.addPlayer(playerId, `プレイヤー${playerId}`);
+        game.addPlayer(playerId, payload.playerName);
         ws.send(JSON.stringify({ type: 'gameCreated', payload: newGameId }));
         broadcastGameState(newGameId);
         break;
       case 'joinGame':
         const targetGameId = payload.gameId;
         game = games.get(targetGameId);
-        if (game && !game.hasStarted && game.addPlayer(playerId, `プレイヤー${playerId}`)) {
+        if (game && !game.hasStarted && game.addPlayer(playerId, payload.playerName)) {
           clientToGameMap.set(ws, targetGameId);
           ws.send(JSON.stringify({ type: 'gameJoined', payload: targetGameId }));
           broadcastGameState(targetGameId);
