@@ -28,7 +28,7 @@ wss.on('connection', ws => {
   console.log(`Client ${playerId} connected`);
 
   ws.send(JSON.stringify({ type: 'playerAssigned', payload: playerId }));
-  ws.send(JSON.stringify({ type: 'availableGames', payload: Array.from(games.values()).filter(game => !game.hasStarted).map(game => game.gameId) }));
+  ws.send(JSON.stringify({ type: 'availableGames', payload: Array.from(games.values()).filter(game => !game.hasStarted).map(game => ({ id: game.gameId, name: game.displayName })) }));
 
   ws.on('message', message => {
     const parsedMessage = JSON.parse(message);
@@ -40,11 +40,11 @@ wss.on('connection', ws => {
     switch (type) {
       case 'createGame':
         const newGameId = `game-${nextGameId++}`;
-        game = new Game(newGameId, playerId); // Pass hostId
+        game = new Game(newGameId, playerId, payload.playerName); // Pass hostId and displayName
         games.set(newGameId, game);
         clientToGameMap.set(ws, newGameId);
         game.addPlayer(playerId, payload.playerName);
-        ws.send(JSON.stringify({ type: 'gameCreated', payload: newGameId }));
+        ws.send(JSON.stringify({ type: 'gameCreated', payload: { gameId: newGameId, displayName: game.displayName } }));
         broadcastGameState(newGameId);
         break;
       case 'joinGame':
@@ -52,7 +52,7 @@ wss.on('connection', ws => {
         game = games.get(targetGameId);
         if (game && !game.hasStarted && game.addPlayer(playerId, payload.playerName)) {
           clientToGameMap.set(ws, targetGameId);
-          ws.send(JSON.stringify({ type: 'gameJoined', payload: targetGameId }));
+          ws.send(JSON.stringify({ type: 'gameJoined', payload: { gameId: targetGameId, displayName: game.displayName } }));
           broadcastGameState(targetGameId);
         } else {
           ws.send(JSON.stringify({ type: 'error', payload: 'Failed to join game. It might be full or already started.' }));

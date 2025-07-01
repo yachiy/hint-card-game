@@ -2,7 +2,8 @@ const suits = ['red', 'green', 'blue', 'yellow', 'white'];
 const ranks = [1, 1, 1, 2, 2, 3, 3, 4, 4, 5];
 
 class Game {
-  constructor(gameId, hostId) {
+  constructor(gameId, hostId, displayName) {
+    this.displayName = displayName;
     this.gameId = gameId;
     this.hostId = hostId;
     this.players = [];
@@ -156,6 +157,7 @@ class Game {
       currentPlayerId: this.currentPlayerId,
       hasStarted: this.hasStarted,
       hostId: this.hostId,
+      displayName: this.displayName,
     };
   }
 }

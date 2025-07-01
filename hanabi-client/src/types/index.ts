@@ -26,4 +26,5 @@ export interface GameState {
   currentPlayerId: number | null;
   hasStarted: boolean;
   hostId: number;
+  displayName: string;
 }

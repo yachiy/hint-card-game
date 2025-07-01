@@ -9,7 +9,8 @@ function App() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [myPlayerId, setMyPlayerId] = useState<number | null>(null);
   const [gameId, setGameId] = useState<string | null>(null);
-  const [availableGames, setAvailableGames] = useState<string[]>([]);
+  const [gameDisplayName, setGameDisplayName] = useState<string | null>(null);
+  const [availableGames, setAvailableGames] = useState<{ id: string; name: string }[]>([]);
   const [inputGameId, setInputGameId] = useState<string>('');
   const [playerName, setPlayerName] = useState<string>('');
 
@@ -31,7 +32,8 @@ function App() {
           break;
         case 'gameCreated':
         case 'gameJoined':
-          setGameId(message.payload);
+          setGameId(message.payload.gameId);
+          setGameDisplayName(message.payload.displayName);
           break;
         case 'availableGames':
           setAvailableGames(message.payload);
@@ -55,6 +57,7 @@ function App() {
       setGameState(null);
       setMyPlayerId(null);
       setGameId(null);
+      setGameDisplayName(null);
     };
 
     newWs.onerror = (error) => {
@@ -136,9 +139,9 @@ function App() {
             <p>利用可能なゲームはありません。</p>
           ) : (
             <ul>
-              {availableGames.map((id) => (
-                <li key={id}>
-                  {id} <button onClick={() => setInputGameId(id)}>選択</button>
+              {availableGames.map((game) => (
+                <li key={game.id}>
+                  {game.name} ({game.id}) <button onClick={() => setInputGameId(game.id)}>選択</button>
                 </li>
               ))}
             </ul>
@@ -151,7 +154,7 @@ function App() {
   if (!gameState || !gameState.hasStarted) {
     return (
       <div className="App">
-        <h1>Hanabi - ゲームID: {gameId}</h1>
+        <h1>Hanabi - {gameDisplayName} ({gameId})</h1>
         <p>Your Player ID: {myPlayerId}</p>
         <h2>参加プレイヤー:</h2>
         <ul>
@@ -175,7 +178,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Hanabi - ゲームID: {gameId}</h1>
+      <h1>Hanabi - {gameDisplayName} ({gameId})</h1>
       <p>Your Player ID: {myPlayerId}</p>
       {gameState && gameState.hostId === myPlayerId && (
         <button onClick={handleDisbandGame}>ゲームを解散</button>
