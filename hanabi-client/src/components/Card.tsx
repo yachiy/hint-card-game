@@ -40,8 +40,8 @@ const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
     position: 'absolute',
     fontSize: '0.7em',
     fontWeight: 'normal',
-    backgroundColor: 'rgba(0,0,0,0.7)', /* 背景を少し濃く */
-    color: card.suit === 'yellow' || card.suit === 'white' ? '#333' : 'white', /* ヒント文字色を調整 */
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    color: 'white', /* ヒント文字色を白に固定 */
     padding: '2px 5px',
     borderRadius: '3px',
     zIndex: 1,
@@ -51,12 +51,12 @@ const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
     <div style={cardStyle}>
       {isOwnHand ? (
         <>
-          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px' }}>{card.suit}</div>}
+          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px', backgroundColor: cardColors[card.suit] }}></div>}
           {card.hintedRank && <div style={{ ...hintStyle, bottom: '5px', right: '5px' }}>{card.rank}</div>}
         </>
       ) : (
         <>
-          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px' }}>{card.suit}</div>}
+          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px', backgroundColor: cardColors[card.suit] }}></div>}
           {card.hintedRank && <div style={{ ...hintStyle, bottom: '5px', right: '5px' }}>{card.rank}</div>}
           <div style={{ marginTop: 'auto', marginBottom: 'auto' }}>{card.rank}</div>
         </>
