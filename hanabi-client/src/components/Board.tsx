@@ -7,35 +7,49 @@ import Controls from './Controls';
 const suits: Suit[] = ['red', 'green', 'blue', 'yellow', 'white'];
 const ranks = [1, 1, 1, 2, 2, 3, 3, 4, 4, 5];
 
-const initialDeck: Card[] = suits.flatMap((suit, suitIndex) => 
-  ranks.map((rank, rankIndex) => ({
-    id: suitIndex * 10 + rankIndex,
-    suit,
-    rank,
-  }))
-);
+const createDeck = (): Card[] => {
+  const deck: Card[] = [];
+  let idCounter = 0;
+  suits.forEach(suit => {
+    ranks.forEach(rank => {
+      deck.push({ id: idCounter++, suit, rank });
+    });
+  });
+  return deck;
+};
+
+const shuffleDeck = (deck: Card[]): Card[] => {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+};
+
+const numPlayers = 2; // 仮に2人プレイとします。後でUIで選択できるようにします。
+const cardsPerPlayer = numPlayers <= 3 ? 5 : 4;
+
+const shuffledDeck = shuffleDeck(createDeck());
+
+const initialPlayers: Player[] = Array.from({ length: numPlayers }, (_, i) => ({
+  id: i + 1,
+  name: `プレイヤー${i + 1}`,
+  hand: [],
+}));
+
+// Deal initial hands
+initialPlayers.forEach(player => {
+  for (let i = 0; i < cardsPerPlayer; i++) {
+    const card = shuffledDeck.shift();
+    if (card) {
+      player.hand.push(card);
+    }
+  }
+});
 
 const initialGameState: GameState = {
-  players: [
-    {
-      id: 1,
-      name: 'プレイヤー1',
-      hand: [
-        { id: 1, suit: 'red', rank: 1 },
-        { id: 2, suit: 'green', rank: 2 },
-        { id: 3, suit: 'blue', rank: 3 },
-      ],
-    },
-    {
-      id: 2,
-      name: 'プレイヤー2',
-      hand: [
-        { id: 4, suit: 'yellow', rank: 4 },
-        { id: 5, suit: 'white', rank: 5 },
-      ],
-    },
-  ],
-  deck: initialDeck,
+  players: initialPlayers,
+  deck: shuffledDeck,
   discardPile: [],
   playedCards: { red: 0, green: 0, blue: 0, yellow: 0, white: 0 },
   hintTokens: 8,
