@@ -24,6 +24,14 @@ const GameInfo: React.FC<GameInfoProps> = ({ gameState }) => {
           ))}
         </div>
       </div>
+      <div>
+        <h5>捨て札</h5>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+          {gameState.discardPile.map(card => (
+            <Card key={card.id} card={card} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

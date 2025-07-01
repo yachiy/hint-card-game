@@ -14,6 +14,7 @@ const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
     width: '80px',
     height: '120px',
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     margin: '5px',
@@ -21,11 +22,23 @@ const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
     color: card.suit === 'yellow' || card.suit === 'white' ? 'black' : 'white',
     cursor: isOwnHand ? 'pointer' : 'default',
     boxShadow: (card.hintedSuit || card.hintedRank) ? '0 0 10px 5px gold' : 'none',
+    position: 'relative',
   };
 
   return (
     <div style={cardStyle}>
-      {isOwnHand ? null : <h2>{card.rank}</h2>}
+      {isOwnHand ? (
+        <>
+          {card.hintedSuit && <div style={{ position: 'absolute', top: '5px', fontSize: '0.8em' }}>{card.suit}</div>}
+          {card.hintedRank && <div style={{ position: 'absolute', bottom: '5px', fontSize: '0.8em' }}>{card.rank}</div>}
+        </>
+      ) : (
+        <>
+          {card.hintedSuit && <div style={{ position: 'absolute', top: '5px', fontSize: '0.8em' }}>{card.suit}</div>}
+          {card.hintedRank && <div style={{ position: 'absolute', bottom: '5px', fontSize: '0.8em' }}>{card.rank}</div>}
+          <h2>{card.rank}</h2>
+        </>
+      )}
     </div>
   );
 };

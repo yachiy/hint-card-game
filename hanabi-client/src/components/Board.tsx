@@ -133,6 +133,43 @@ const Board: React.FC = () => {
     setGameState(newGameState);
   };
 
+  const handleDiscardCard = () => {
+    if (selectedCardId === null) return;
+
+    const currentPlayer = gameState.players.find(p => p.id === gameState.currentPlayerId);
+    if (!currentPlayer) return;
+
+    const cardToDiscard = currentPlayer.hand.find(c => c.id === selectedCardId);
+    if (!cardToDiscard) return;
+
+    const newGameState = { ...gameState };
+    const newPlayer = { ...currentPlayer };
+
+    // Add card to discard pile
+    newGameState.discardPile.push(cardToDiscard);
+
+    // Increment hint tokens (max 8)
+    if (newGameState.hintTokens < 8) {
+      newGameState.hintTokens++;
+    }
+
+    // Update player's hand
+    newPlayer.hand = newPlayer.hand.filter(c => c.id !== selectedCardId);
+    if (newGameState.deck.length > 0) {
+      newPlayer.hand.push(newGameState.deck[0]);
+      newGameState.deck = newGameState.deck.slice(1);
+    }
+
+    // Update players array
+    newGameState.players = newGameState.players.map(p => p.id === newPlayer.id ? newPlayer : p);
+
+    // Change turn
+    newGameState.currentPlayerId = (gameState.currentPlayerId % gameState.players.length) + 1;
+
+    setGameState(newGameState);
+    setSelectedCardId(null);
+  };
+
   return (
     <div>
       <GameInfo gameState={gameState} />
@@ -147,7 +184,7 @@ const Board: React.FC = () => {
         />
       ))}
       <hr />
-      <Controls onPlayCard={handlePlayCard} onGiveHint={handleGiveHint} players={gameState.players} currentPlayerId={gameState.currentPlayerId} />
+      <Controls onPlayCard={handlePlayCard} onGiveHint={handleGiveHint} onDiscardCard={handleDiscardCard} players={gameState.players} currentPlayerId={gameState.currentPlayerId} hintTokens={gameState.hintTokens} />
     </div>
   );
 };
