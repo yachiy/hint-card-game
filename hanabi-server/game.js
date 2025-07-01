@@ -18,6 +18,9 @@ class Game {
     if (this.players.length >= 5) {
       return false; // Max 5 players
     }
+    if (this.hasStarted) {
+      return false; // Cannot join a game that has already started
+    }
     this.players.push({ id: playerId, name: playerName, hand: [] });
     return true;
   }

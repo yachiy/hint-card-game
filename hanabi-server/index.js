@@ -28,7 +28,7 @@ wss.on('connection', ws => {
   console.log(`Client ${playerId} connected`);
 
   ws.send(JSON.stringify({ type: 'playerAssigned', payload: playerId }));
-  ws.send(JSON.stringify({ type: 'availableGames', payload: Array.from(games.keys()) }));
+  ws.send(JSON.stringify({ type: 'availableGames', payload: Array.from(games.values()).filter(game => !game.hasStarted).map(game => game.gameId) }));
 
   ws.on('message', message => {
     const parsedMessage = JSON.parse(message);
@@ -50,12 +50,12 @@ wss.on('connection', ws => {
       case 'joinGame':
         const targetGameId = payload.gameId;
         game = games.get(targetGameId);
-        if (game && game.addPlayer(playerId, `プレイヤー${playerId}`)) {
+        if (game && !game.hasStarted && game.addPlayer(playerId, `プレイヤー${playerId}`)) {
           clientToGameMap.set(ws, targetGameId);
           ws.send(JSON.stringify({ type: 'gameJoined', payload: targetGameId }));
           broadcastGameState(targetGameId);
         } else {
-          ws.send(JSON.stringify({ type: 'error', payload: 'Failed to join game.' }));
+          ws.send(JSON.stringify({ type: 'error', payload: 'Failed to join game. It might be full or already started.' }));
         }
         break;
       case 'startGame':

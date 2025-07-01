@@ -8,9 +8,10 @@ interface ControlsProps {
   players: Player[];
   currentPlayerId: number | null;
   hintTokens: number;
+  isMyTurn: boolean;
 }
 
-const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCard, players, currentPlayerId, hintTokens }) => {
+const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCard, players, currentPlayerId, hintTokens, isMyTurn }) => {
   const [hintTargetPlayerId, setHintTargetPlayerId] = React.useState<number | null>(null);
   const [hintType, setHintType] = React.useState<'suit' | 'rank' | null>(null);
   const [hintValue, setHintValue] = React.useState<string | number | null>(null);
@@ -19,7 +20,7 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
   const ranks = [1, 2, 3, 4, 5];
 
   const handleGiveHintClick = () => {
-    if (hintTargetPlayerId !== null && hintType !== null && hintValue !== null && hintTokens > 0) {
+    if (hintTargetPlayerId !== null && hintType !== null && hintValue !== null && hintTokens > 0 && isMyTurn) {
       onGiveHint(hintTargetPlayerId, hintType, hintValue);
       setHintTargetPlayerId(null);
       setHintType(null);
@@ -27,14 +28,14 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
     }
   };
 
-  const isHintButtonDisabled = hintTokens === 0 || hintTargetPlayerId === null || hintType === null || hintValue === null;
+  const isHintButtonDisabled = hintTokens === 0 || hintTargetPlayerId === null || hintType === null || hintValue === null || !isMyTurn;
 
   return (
     <div>
       <h4>操作</h4>
-      <button onClick={onPlayCard}>カードをプレイ</button>
+      <button onClick={onPlayCard} disabled={!isMyTurn}>カードをプレイ</button>
       <button onClick={handleGiveHintClick} disabled={isHintButtonDisabled}>ヒントを出す</button>
-      <button onClick={onDiscardCard}>カードを捨てる</button>
+      <button onClick={onDiscardCard} disabled={!isMyTurn}>カードを捨てる</button>
       <div>
         <h5>ヒント</h5>
         <select value={hintTargetPlayerId || ''} onChange={(e) => setHintTargetPlayerId(Number(e.target.value))}>
