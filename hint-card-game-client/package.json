@@ -1,5 +1,5 @@
 {
-  "name": "hanabi-client",
+  "name": "hint-card-game-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "serve -s build",
-    "dev": "concurrently 'npm start' 'npm --prefix ../hanabi-server start'",
+    "dev": "concurrently 'npm start' 'npm --prefix ../hint-card-game-server start'",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

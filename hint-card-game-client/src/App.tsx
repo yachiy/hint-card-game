@@ -119,7 +119,7 @@ function App() {
     return (
       <div className="App">
         <div className="stars">{generateStars()}</div>
-        <h1>Hanabi - ログイン</h1>
+        <h1>Hint Card Game - ログイン</h1>
         <div>
           <h2>ユーザー名</h2>
           <input
@@ -181,7 +181,7 @@ function App() {
     return (
       <div className="App">
         <div className="stars">{generateStars()}</div>
-        <h1>Hanabi - ロビー</h1>
+        <h1>Hint Card Game - ロビー</h1>
         <div>
           <h2>プレイヤー名</h2>
           <input
@@ -230,7 +230,7 @@ function App() {
     return (
       <div className="App">
         <div className="stars">{generateStars()}</div>
-        <h1>Hanabi - {gameDisplayName} ({gameId})</h1>
+        <h1>Hint Card Game - {gameDisplayName} ({gameId})</h1>
         <h2>参加プレイヤー:</h2>
         <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
           {gameState?.players.map(p => <li key={p.id}>{p.name}</li>)}
@@ -254,7 +254,7 @@ function App() {
   return (
     <div className="App">
       <div className="stars">{generateStars()}</div>
-      <h1>Hanabi - {gameDisplayName} ({gameId})</h1>
+      <h1>Hint Card Game - {gameDisplayName} ({gameId})</h1>
       {gameState && gameState.hostId === myPlayerId && (
         <button onClick={handleDisbandGame}>ゲームを解散</button>
       )}
