@@ -46,7 +46,8 @@ function App() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    const newWs = new WebSocket(`ws://localhost:8080?username=${username}&password=${password}`);
+    const wsUrl = process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:8080';
+    const newWs = new WebSocket(`${wsUrl}?username=${username}&password=${password}`);
 
     newWs.onopen = () => {
       console.log('Connected to WebSocket server');

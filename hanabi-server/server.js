@@ -3,7 +3,7 @@ const WebSocket = require('ws');
 const Game = require('./game');
 
 const wss = new WebSocket.Server({
-  port: 8080,
+  port: process.env.PORT || 8080,
   verifyClient: (info, done) => {
     const { URLSearchParams } = require('url');
     const params = new URLSearchParams(info.req.url.split('?')[1] || '');
