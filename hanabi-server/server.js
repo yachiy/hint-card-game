@@ -5,15 +5,10 @@ const Game = require('./game');
 const wss = new WebSocket.Server({
   port: 8080,
   verifyClient: (info, done) => {
-    const authHeader = info.req.headers.authorization;
-    if (!authHeader) {
-      done(false, 401, 'Unauthorized');
-      return;
-    }
-
-    const base64Credentials = authHeader.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString('utf8');
-    const [username, password] = credentials.split(':');
+    const { URLSearchParams } = require('url');
+    const params = new URLSearchParams(info.req.url.split('?')[1] || '');
+    const username = params.get('username');
+    const password = params.get('password');
 
     if (username === process.env.AUTH_USER && password === process.env.AUTH_PASSWORD) {
       done(true);
@@ -42,10 +37,11 @@ function broadcastGameState(gameId) {
   });
 }
 
+const ONE_HOUR = 60 * 60 * 1000; // 1 hour in milliseconds
+
 // Function to clean up old games
 function cleanupOldGames() {
   const now = Date.now();
-  const ONE_HOUR = 60 * 60 * 1000; // 1 hour in milliseconds
   const TWO_HOURS = 2 * ONE_HOUR; // 2 hours in milliseconds
 
   for (const [gameId, game] of games.entries()) {
