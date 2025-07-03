@@ -7,6 +7,14 @@ interface CardProps {
   isSelected?: boolean;
 }
 
+export const japaneseSuitNames: { [key: string]: string } = {
+  red: '赤',
+  green: '緑',
+  blue: '青',
+  yellow: '黄',
+  white: '白',
+};
+
 const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
   const cardColors: { [key: string]: string } = {
     red: '#FF4136',

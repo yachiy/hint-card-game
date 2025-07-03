@@ -14,7 +14,6 @@ body {
 
 .App {
   text-align: center;
-  padding: 20px;
   position: relative;
   z-index: 1;
   text-shadow: none; /* テキストシャドウを削除 */
@@ -68,6 +67,7 @@ input::placeholder {
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
+  box-sizing: border-box; /* box-sizingをborder-boxに設定 */
 }
 
 /* 星のエフェクト */

@@ -1,6 +1,6 @@
 import React from 'react';
 import { GameState } from '../types';
-import Card from './Card';
+import Card, { japaneseSuitNames } from './Card';
 
 interface GameInfoProps {
   gameState: GameState;
@@ -20,7 +20,7 @@ const GameInfo: React.FC<GameInfoProps> = ({ gameState }) => {
         <div style={{ display: 'flex', gap: '10px' }}>
           {Object.entries(gameState.playedCards).map(([suit, rank]) => (
             <div key={suit} style={{ textAlign: 'center' }}>
-              <div style={{ marginBottom: '5px', color: '#FFFFFF' }}>{suit}</div>
+              <div style={{ marginBottom: '5px', color: '#FFFFFF' }}>{japaneseSuitNames[suit]}</div>
               <Card card={{ id: -1, suit: suit as any, rank }} />
             </div>
           ))}

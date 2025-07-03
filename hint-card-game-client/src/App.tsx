@@ -76,7 +76,6 @@ function App() {
           break;
         case 'gameDisbanded':
           setGameState(null);
-          setMyPlayerId(null);
           setGameId(null);
           setGameDisplayName(null);
           break;
@@ -88,10 +87,8 @@ function App() {
     newWs.onclose = () => {
       console.log('Disconnected from WebSocket server');
       setGameState(null);
-      setMyPlayerId(null);
       setGameId(null);
       setGameDisplayName(null);
-      setIsAuthenticated(false); // 認証状態をリセット
     };
 
     newWs.onerror = (error) => {
@@ -227,6 +224,7 @@ function App() {
   }
 
   if (!gameState || !gameState.hasStarted) {
+    console.log('Lobby state rendering: hostId=', gameState?.hostId, 'myPlayerId=', myPlayerId);
     return (
       <div className="App">
         <div className="stars">{generateStars()}</div>
@@ -235,6 +233,7 @@ function App() {
         <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
           {gameState?.players.map(p => <li key={p.id}>{p.name}</li>)}
         </ul>
+        
         {gameState && gameState.players.length >= 2 && gameState.hostId === myPlayerId && (
           <button onClick={handleStartGame}>ゲームを開始</button>
         )}
@@ -258,7 +257,9 @@ function App() {
       {gameState && gameState.hostId === myPlayerId && (
         <button onClick={handleDisbandGame}>ゲームを解散</button>
       )}
-      <Board gameState={gameState} sendAction={sendAction} myPlayerId={myPlayerId} />
+      <div style={{ padding: '20px' }}>
+        <Board gameState={gameState} sendAction={sendAction} myPlayerId={myPlayerId} />
+      </div>
     </div>
   );
 }
