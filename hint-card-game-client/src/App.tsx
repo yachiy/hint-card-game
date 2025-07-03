@@ -50,7 +50,7 @@ function App() {
     const newWs = new WebSocket(`${wsUrl}?username=${username}&password=${password}`);
 
     newWs.onopen = () => {
-      console.log('Connected to WebSocket server');
+      
     };
 
     newWs.onmessage = (event) => {
@@ -80,12 +80,12 @@ function App() {
           setGameDisplayName(null);
           break;
         default:
-          console.log('Unknown message type:', message.type, message.payload);
+          
       }
     };
 
     newWs.onclose = () => {
-      console.log('Disconnected from WebSocket server');
+      
       setGameState(null);
       setGameId(null);
       setGameDisplayName(null);
@@ -186,7 +186,7 @@ function App() {
             placeholder="あなたの名前"
             value={playerName}
             onChange={(e) => {
-              console.log('Player name input changed:', e.target.value);
+              
               setPlayerName(e.target.value);
             }}
           />
@@ -224,7 +224,7 @@ function App() {
   }
 
   if (!gameState || !gameState.hasStarted) {
-    console.log('Lobby state rendering: hostId=', gameState?.hostId, 'myPlayerId=', myPlayerId);
+    
     return (
       <div className="App">
         <div className="stars">{generateStars()}</div>

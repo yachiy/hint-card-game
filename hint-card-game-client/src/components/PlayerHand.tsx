@@ -17,7 +17,7 @@ const PlayerHand: React.FC<PlayerHandProps> = ({ player, currentPlayerId, onSele
   return (
     <div style={{ marginBottom: '20px' }}>
       <h3 style={{ marginBottom: '10px' }}>{player.name} {isMyHand && '(あなた)'}</h3>
-      <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', overflowX: 'auto', justifyContent: 'flex-start', gap: '10px', padding: '10px 0' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', overflowX: 'auto', justifyContent: 'flex-start', gap: '10px', padding: '10px 0', width: '100%', boxSizing: 'border-box' }}>
         {player.hand.map((card) => (
           <div key={card.id} onClick={() => isMyHand && isMyTurn && onSelectCard(card.id)} style={{ flexShrink: 0, minWidth: 0 }}>
             <Card
