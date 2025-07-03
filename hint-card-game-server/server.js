@@ -68,6 +68,7 @@ wss.on('connection', ws => {
   console.log(`Client ${playerId} connected`);
 
   ws.send(JSON.stringify({ type: 'playerAssigned', payload: playerId }));
+  console.log(`Sent playerAssigned to client ${playerId}`);
   ws.send(JSON.stringify({ type: 'availableGames', payload: Array.from(games.values()).filter(game => !game.hasStarted).map(game => ({ id: game.gameId, name: game.displayName })) }));
 
   ws.on('message', message => {
@@ -85,7 +86,9 @@ wss.on('connection', ws => {
         clientToGameMap.set(ws, newGameId);
         game.addPlayer(playerId, payload.playerName);
         ws.send(JSON.stringify({ type: 'gameCreated', payload: { gameId: newGameId, displayName: game.displayName } }));
-        broadcastGameState(newGameId);
+        ws.send(JSON.stringify({ type: 'playerAssigned', payload: playerId }));
+        console.log(`Sent playerAssigned on createGame to client ${playerId}`);
+        broadcastGameState(newGameId); // ゲーム作成時にもgameStateをブロードキャスト // Send initial state to creator
         break;
       case 'joinGame':
         const targetGameId = payload.gameId;
@@ -93,7 +96,8 @@ wss.on('connection', ws => {
         if (game && !game.hasStarted && game.addPlayer(playerId, payload.playerName)) {
           clientToGameMap.set(ws, targetGameId);
           ws.send(JSON.stringify({ type: 'gameJoined', payload: { gameId: targetGameId, displayName: game.displayName } }));
-          broadcastGameState(targetGameId);
+          ws.send(JSON.stringify({ type: 'playerAssigned', payload: playerId }));
+          broadcastGameState(targetGameId); // Notify all players of the new state
         } else {
           ws.send(JSON.stringify({ type: 'error', payload: 'Failed to join game. It might be full or already started.' }));
         }
