@@ -109,7 +109,16 @@ class Game {
 
     this.nextTurn();
     this._updateActivity(); // Update activity on playCard
+    this.checkWinCondition(); // Check for win condition after every card play
     return true;
+  }
+
+  checkWinCondition() {
+    const allSuitsPlayed = suits.every(suit => this.playedCards[suit] === 5);
+    if (allSuitsPlayed) {
+      this.isGameOver = true;
+      console.log('[Game] Win condition met! Setting isGameOver to true.');
+    }
   }
 
   giveHint(hintTargetPlayerId, hintType, value) {

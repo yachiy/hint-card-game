@@ -144,7 +144,9 @@ wss.on('connection', ws => {
         }
         break;
       case 'ping':
-        // Do nothing, just keep the connection alive
+        if (game) {
+          game._updateActivity();
+        }
         break;
       default:
         console.log(`Unknown message type: ${type}`);
