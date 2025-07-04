@@ -15,6 +15,7 @@ class Game {
     this.currentPlayerId = null; // Game starts when enough players join
     this.hasStarted = false;
     this.isGameOver = false;
+    this.isGameWon = false; // Add isGameWon property
     this.lastActivity = Date.now(); // Add lastActivity property
   }
 
@@ -117,7 +118,8 @@ class Game {
     const allSuitsPlayed = suits.every(suit => this.playedCards[suit] === 5);
     if (allSuitsPlayed) {
       this.isGameOver = true;
-      console.log('[Game] Win condition met! Setting isGameOver to true.');
+      this.isGameWon = true; // Set isGameWon to true on win
+      console.log('[Game] Win condition met! Setting isGameOver to true and isGameWon to true.');
     }
   }
 
@@ -187,6 +189,7 @@ class Game {
       hostId: this.hostId,
       displayName: this.displayName,
       isGameOver: this.isGameOver,
+      isGameWon: this.isGameWon, // Include isGameWon in state
       lastActivity: this.lastActivity, // Include lastActivity in state
     };
   }

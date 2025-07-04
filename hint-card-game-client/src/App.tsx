@@ -267,13 +267,14 @@ function App() {
   }
 
   const isGameOver = gameState && gameState.isGameOver;
+  const isGameWon = gameState && gameState.isGameWon;
 
   if (isGameOver) {
     return (
       <div className="App">
         <div className="stars">{generateStars()}</div>
         <h1>Hint Card Game - {gameDisplayName} ({gameId})</h1>
-        <h2>ゲームオーバー</h2>
+        <h2>{isGameWon ? 'ゲームクリア！' : 'ゲームオーバー'}</h2>
         <p>ゲームが終了しました。</p>
         {gameState && gameState.hostId === myPlayerId && (
           <button onClick={handleDisbandGame}>ゲームを解散</button>
