@@ -1,3 +1,13 @@
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1); // Exit with a failure code
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1); // Exit with a failure code
+});
+
 require('dotenv').config();
 const WebSocket = require('ws');
 const Game = require('./game');
@@ -164,4 +174,4 @@ wss.on('connection', ws => {
   });
 });
 
-console.log('WebSocket server started on port 8080');
+console.log(`WebSocket server started on port ${process.env.PORT || 8080}`);

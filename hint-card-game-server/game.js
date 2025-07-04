@@ -98,7 +98,7 @@ class Game {
       console.log(`[playCard] Card ${cardToPlay.id} played incorrectly. Storm tokens remaining: ${this.stormTokens}`);
       if (this.stormTokens === 0) {
         this.isGameOver = true;
-        console.log('[playCard] Game over: Storm tokens reached 0.');
+        console.log('[playCard] Game over: Storm tokens reached 0. Setting isGameOver to true.');
       }
     }
 
