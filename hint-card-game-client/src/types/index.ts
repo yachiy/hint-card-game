@@ -29,4 +29,9 @@ export interface GameState {
   displayName: string;
   lastActivity: number;
   isGameOver: boolean;
+  isGameWon: boolean;
+  deckEmptyTurnsCounter: number;
+  deckWasEmpty: boolean;
+  gameEndReason: 'win' | 'storm' | 'deck_empty_turns' | null;
+  score: number;
 }

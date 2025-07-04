@@ -270,12 +270,23 @@ function App() {
   const isGameWon = gameState && gameState.isGameWon;
 
   if (isGameOver) {
+    let gameOverMessage = '';
+    if (gameState.isGameWon) {
+      gameOverMessage = 'ゲームクリア！';
+    } else if (gameState.gameEndReason === 'storm') {
+      gameOverMessage = 'ゲームオーバー (ストームトークン切れ)';
+    } else if (gameState.gameEndReason === 'deck_empty_turns') {
+      gameOverMessage = 'ゲーム終了 (山札切れ)';
+    } else {
+      gameOverMessage = 'ゲームオーバー'; // Fallback
+    }
+
     return (
       <div className="App">
         <div className="stars">{generateStars()}</div>
         <h1>Hint Card Game - {gameDisplayName} ({gameId})</h1>
-        <h2>{isGameWon ? 'ゲームクリア！' : 'ゲームオーバー'}</h2>
-        <p>ゲームが終了しました。</p>
+        <h2>{gameOverMessage}</h2>
+        <p>得点: {gameState.score}</p>
         {gameState && gameState.hostId === myPlayerId && (
           <button onClick={handleDisbandGame}>ゲームを解散</button>
         )}

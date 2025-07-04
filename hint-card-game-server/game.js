@@ -16,6 +16,9 @@ class Game {
     this.hasStarted = false;
     this.isGameOver = false;
     this.isGameWon = false; // Add isGameWon property
+    this.deckEmptyTurnsCounter = 0; // New: Counter for turns after deck is empty
+    this.deckWasEmpty = false; // New: Flag if deck has become empty
+    this.gameEndReason = null; // New: Reason for game ending (win, storm, deck_empty_turns)
     this.lastActivity = Date.now(); // Add lastActivity property
   }
 
@@ -106,6 +109,7 @@ class Game {
       console.log(`[playCard] Card ${cardToPlay.id} played incorrectly. Storm tokens remaining: ${this.stormTokens}`);
       if (this.stormTokens === 0) {
         this.isGameOver = true;
+        this.gameEndReason = 'storm'; // Set game end reason
         console.log('[playCard] Game over: Storm tokens reached 0. Setting isGameOver to true.');
       }
     }
@@ -113,6 +117,9 @@ class Game {
     player.hand.splice(cardIndex, 1);
     if (this.deck.length > 0) {
       player.hand.push(this.deck.shift());
+    } else if (this.deck.length === 0 && !this.deckWasEmpty) { // Only set if it just became empty
+      this.deckWasEmpty = true;
+      console.log('[playCard] Deck is now empty.');
     }
 
     this.nextTurn();
@@ -126,6 +133,7 @@ class Game {
     if (allSuitsPlayed) {
       this.isGameOver = true;
       this.isGameWon = true; // Set isGameWon to true on win
+      this.gameEndReason = 'win'; // Set game end reason
       console.log('[Game] Win condition met! Setting isGameOver to true and isGameWon to true.');
     }
   }
@@ -169,6 +177,9 @@ class Game {
     player.hand.splice(cardIndex, 1);
     if (this.deck.length > 0) {
       player.hand.push(this.deck.shift());
+    } else if (this.deck.length === 0 && !this.deckWasEmpty) { // Only set if it just became empty
+      this.deckWasEmpty = true;
+      console.log('[discardCard] Deck is now empty.');
     }
 
     this.nextTurn();
@@ -180,6 +191,25 @@ class Game {
     const currentIndex = this.players.findIndex(p => p.id === this.currentPlayerId);
     const nextIndex = (currentIndex + 1) % this.players.length;
     this.currentPlayerId = this.players[nextIndex].id;
+
+    // If deck is empty, increment turns counter
+    if (this.deckWasEmpty) {
+      this.deckEmptyTurnsCounter++;
+      console.log(`[nextTurn] Deck empty turns counter: ${this.deckEmptyTurnsCounter}/${this.players.length}`);
+      if (this.deckEmptyTurnsCounter >= this.players.length) {
+        this.isGameOver = true;
+        this.gameEndReason = 'deck_empty_turns'; // Set game end reason
+        console.log('[nextTurn] Game over: Deck empty turns completed.');
+      }
+    }
+  }
+
+  getScore() {
+    let score = 0;
+    for (const suit in this.playedCards) {
+      score += this.playedCards[suit];
+    }
+    return score;
   }
 
   getState() {
@@ -197,6 +227,10 @@ class Game {
       displayName: this.displayName,
       isGameOver: this.isGameOver,
       isGameWon: this.isGameWon, // Include isGameWon in state
+      deckEmptyTurnsCounter: this.deckEmptyTurnsCounter, // Include in state
+      deckWasEmpty: this.deckWasEmpty, // Include in state
+      gameEndReason: this.gameEndReason, // Include in state
+      score: this.getScore(), // Include score in state
       lastActivity: this.lastActivity, // Include lastActivity in state
     };
   }
