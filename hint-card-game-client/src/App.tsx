@@ -223,6 +223,7 @@ function App() {
         </div>
         <div>
           <h2>利用可能なゲーム</h2>
+          <button onClick={() => sendAction('requestAvailableGames', {})}>更新</button>
           {availableGames.length === 0 ? (
             <p>利用可能なゲームはありません。</p>
           ) : (

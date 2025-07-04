@@ -148,6 +148,9 @@ wss.on('connection', ws => {
           game._updateActivity();
         }
         break;
+      case 'requestAvailableGames':
+        ws.send(JSON.stringify({ type: 'availableGames', payload: Array.from(games.values()).filter(game => !game.hasStarted).map(game => ({ id: game.gameId, name: game.displayName })) }));
+        break;
       default:
         console.log(`Unknown message type: ${type}`);
     }
