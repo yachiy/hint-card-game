@@ -133,6 +133,9 @@ wss.on('connection', ws => {
           ws.send(JSON.stringify({ type: 'error', payload: 'Failed to disband game. Only the host can disband the game.' }));
         }
         break;
+      case 'ping':
+        // Do nothing, just keep the connection alive
+        break;
       default:
         console.log(`Unknown message type: ${type}`);
     }

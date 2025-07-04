@@ -50,7 +50,22 @@ function App() {
     const newWs = new WebSocket(`${wsUrl}?username=${username}&password=${password}`);
 
     newWs.onopen = () => {
-      
+      console.log('WebSocket connection established.');
+      // Keep-alive mechanism: send a ping every 30 seconds
+      const pingInterval = setInterval(() => {
+        if (newWs.readyState === WebSocket.OPEN) {
+          newWs.send(JSON.stringify({ type: 'ping' }));
+        }
+      }, 30000); // Send ping every 30 seconds
+
+      // Clear interval on close
+      newWs.onclose = () => {
+        console.log('WebSocket connection closed.');
+        clearInterval(pingInterval);
+        setGameState(null);
+        setGameId(null);
+        setGameDisplayName(null);
+      };
     };
 
     newWs.onmessage = (event) => {

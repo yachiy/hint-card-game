@@ -87,14 +87,18 @@ class Game {
     if (cardIndex === -1) return false;
 
     const cardToPlay = player.hand[cardIndex];
+    console.log(`[playCard] Player ${playerId} attempting to play card:`, cardToPlay);
 
     if (this.playedCards[cardToPlay.suit] === cardToPlay.rank - 1) {
       this.playedCards[cardToPlay.suit]++;
+      console.log(`[playCard] Card ${cardToPlay.id} played successfully. New playedCards:`, this.playedCards);
     } else {
       this.stormTokens--;
       this.discardPile.push(cardToPlay);
+      console.log(`[playCard] Card ${cardToPlay.id} played incorrectly. Storm tokens remaining: ${this.stormTokens}`);
       if (this.stormTokens === 0) {
         this.isGameOver = true;
+        console.log('[playCard] Game over: Storm tokens reached 0.');
       }
     }
 
