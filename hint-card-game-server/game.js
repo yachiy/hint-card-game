@@ -93,6 +93,13 @@ class Game {
     if (this.playedCards[cardToPlay.suit] === cardToPlay.rank - 1) {
       this.playedCards[cardToPlay.suit]++;
       console.log(`[playCard] Card ${cardToPlay.id} played successfully. New playedCards:`, this.playedCards);
+      // Bonus: If a 5 card is played, restore a hint token
+      if (cardToPlay.rank === 5) {
+        if (this.hintTokens < 8) {
+          this.hintTokens++;
+          console.log(`[playCard] Bonus: 5 card played. Hint token restored. Current hint tokens: ${this.hintTokens}`);
+        }
+      }
     } else {
       this.stormTokens--;
       this.discardPile.push(cardToPlay);
