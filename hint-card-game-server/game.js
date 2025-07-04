@@ -14,6 +14,7 @@ class Game {
     this.stormTokens = 3;
     this.currentPlayerId = null; // Game starts when enough players join
     this.hasStarted = false;
+    this.isGameOver = false;
     this.lastActivity = Date.now(); // Add lastActivity property
   }
 
@@ -80,7 +81,7 @@ class Game {
 
   playCard(playerId, cardId) {
     const player = this.players.find(p => p.id === playerId);
-    if (!player || this.currentPlayerId !== playerId || !this.hasStarted) return false;
+    if (!player || this.currentPlayerId !== playerId || !this.hasStarted || this.isGameOver) return false;
 
     const cardIndex = player.hand.findIndex(c => c.id === cardId);
     if (cardIndex === -1) return false;
@@ -92,6 +93,9 @@ class Game {
     } else {
       this.stormTokens--;
       this.discardPile.push(cardToPlay);
+      if (this.stormTokens === 0) {
+        this.isGameOver = true;
+      }
     }
 
     player.hand.splice(cardIndex, 1);
@@ -105,7 +109,7 @@ class Game {
   }
 
   giveHint(hintTargetPlayerId, hintType, value) {
-    if (this.hintTokens === 0 || !this.hasStarted) return false;
+    if (this.hintTokens === 0 || !this.hasStarted || this.isGameOver) return false;
 
     this.hintTokens--;
 
@@ -128,7 +132,7 @@ class Game {
 
   discardCard(playerId, cardId) {
     const player = this.players.find(p => p.id === playerId);
-    if (!player || this.currentPlayerId !== playerId || !this.hasStarted) return false;
+    if (!player || this.currentPlayerId !== playerId || !this.hasStarted || this.isGameOver) return false;
 
     const cardIndex = player.hand.findIndex(c => c.id === cardId);
     if (cardIndex === -1) return false;
@@ -169,6 +173,7 @@ class Game {
       hasStarted: this.hasStarted,
       hostId: this.hostId,
       displayName: this.displayName,
+      isGameOver: this.isGameOver,
       lastActivity: this.lastActivity, // Include lastActivity in state
     };
   }

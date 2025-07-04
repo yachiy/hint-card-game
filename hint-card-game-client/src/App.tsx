@@ -54,10 +54,13 @@ function App() {
     };
 
     newWs.onmessage = (event) => {
+      console.log('WebSocket message received:', event.data);
       const message = JSON.parse(event.data as string);
       switch (message.type) {
         case 'gameState':
           setGameState(message.payload);
+          console.log('Received gameState:', message.payload);
+          console.log('isGameOver from gameState:', message.payload.isGameOver);
           break;
         case 'playerAssigned':
           setMyPlayerId(message.payload);
@@ -71,7 +74,6 @@ function App() {
           setAvailableGames(message.payload);
           break;
         case 'error':
-          console.error('Server error:', message.payload);
           alert(message.payload);
           break;
         case 'gameDisbanded':
@@ -85,14 +87,13 @@ function App() {
     };
 
     newWs.onclose = () => {
-      
+      console.log('WebSocket connection closed.');
       setGameState(null);
       setGameId(null);
       setGameDisplayName(null);
     };
 
     newWs.onerror = (error) => {
-      console.error('WebSocket error:', error);
       alert('認証に失敗しました。ユーザー名とパスワードを確認してください。');
       setIsAuthenticated(false); // 認証状態をリセット
     };
@@ -245,6 +246,22 @@ function App() {
         )}
         {gameState && gameState.hostId !== myPlayerId && (
           <p>ホストのみがゲームを開始できます。</p>
+        )}
+      </div>
+    );
+  }
+
+  const isGameOver = gameState && gameState.isGameOver;
+
+  if (isGameOver) {
+    return (
+      <div className="App">
+        <div className="stars">{generateStars()}</div>
+        <h1>Hint Card Game - {gameDisplayName} ({gameId})</h1>
+        <h2>ゲームオーバー</h2>
+        <p>ゲームが終了しました。</p>
+        {gameState && gameState.hostId === myPlayerId && (
+          <button onClick={handleDisbandGame}>ゲームを解散</button>
         )}
       </div>
     );

@@ -28,4 +28,5 @@ export interface GameState {
   hostId: number;
   displayName: string;
   lastActivity: number;
+  isGameOver: boolean;
 }
