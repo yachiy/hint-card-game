@@ -59,12 +59,12 @@ const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
     <div style={cardStyle}>
       {isOwnHand ? (
         <>
-          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px', backgroundColor: cardColors[card.suit] }}></div>}
+          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px', backgroundColor: cardColors[card.suit], border: '2px solid gray' }}></div>}
           {card.hintedRank && <div style={{ ...hintStyle, bottom: '5px', right: '5px' }}>{card.rank}</div>}
         </>
       ) : (
         <>
-          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px', backgroundColor: cardColors[card.suit] }}></div>}
+          {card.hintedSuit && <div style={{ ...hintStyle, top: '5px', left: '5px', backgroundColor: cardColors[card.suit], border: '2px solid gray' }}></div>}
           {card.hintedRank && <div style={{ ...hintStyle, bottom: '5px', right: '5px' }}>{card.rank}</div>}
           <div style={{ marginTop: 'auto', marginBottom: 'auto' }}>{card.rank}</div>
         </>
