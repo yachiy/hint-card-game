@@ -10,10 +10,22 @@ process.on('unhandledRejection', (reason, promise) => {
 
 require('dotenv').config();
 const WebSocket = require('ws');
+const http = require('http'); // Add this line
 const Game = require('./game');
 
+// Create an HTTP server
+const server = http.createServer((req, res) => {
+  if (req.url === '/health' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('OK');
+  } else {
+    res.writeHead(404); // Not Found for other HTTP requests
+    res.end();
+  }
+});
+
 const wss = new WebSocket.Server({
-  port: process.env.PORT || 8080,
+  server: server, // Attach WebSocket server to the HTTP server
   verifyClient: (info, done) => {
     const { URLSearchParams } = require('url');
     const params = new URLSearchParams(info.req.url.split('?')[1] || '');
@@ -73,6 +85,9 @@ function cleanupOldGames() {
 setInterval(cleanupOldGames, ONE_HOUR);
 
 wss.on('connection', ws => {
+  ws.isAlive = true; // Add this line
+  ws.on('pong', () => { ws.isAlive = true; }); // Add this line
+
   const playerId = nextPlayerId++;
   clientToPlayerIdMap.set(ws, playerId);
   console.log(`Client ${playerId} connected`);
@@ -179,4 +194,15 @@ wss.on('connection', ws => {
   });
 });
 
-console.log(`WebSocket server started on port ${process.env.PORT || 8080}`);
+setInterval(() => {
+  wss.clients.forEach(ws => {
+    if (ws.isAlive === false) return ws.terminate();
+
+    ws.isAlive = false;
+    ws.ping();
+  });
+}, 30000); // Ping clients every 30 seconds
+
+server.listen(process.env.PORT || 8080, () => {
+  console.log(`HTTP and WebSocket server started on port ${process.env.PORT || 8080}`);
+});

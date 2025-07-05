@@ -58,10 +58,25 @@ function App() {
         }
       }, 30000); // Send ping every 30 seconds
 
-      // Clear interval on close
+      // Send periodic HTTP request to prevent Render idle timeout
+      const httpKeepAliveInterval = setInterval(() => {
+        const healthUrl = process.env.REACT_APP_WEBSOCKET_URL ? process.env.REACT_APP_WEBSOCKET_URL.replace('ws', 'http') + '/health' : 'http://localhost:8080/health';
+        fetch(healthUrl)
+          .then(response => {
+            if (!response.ok) {
+              console.error('Health check failed:', response.statusText);
+            }
+          })
+          .catch(error => {
+            console.error('Error during health check:', error);
+          });
+      }, 30000); // Send HTTP request every 30 seconds
+
+      // Clear intervals on close
       newWs.onclose = () => {
         console.log('WebSocket connection closed.');
         clearInterval(pingInterval);
+        clearInterval(httpKeepAliveInterval);
         setGameState(null);
         setGameId(null);
         setGameDisplayName(null);
