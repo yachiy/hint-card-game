@@ -109,6 +109,7 @@ wss.on('connection', ws => {
         game = new Game(newGameId, playerId, payload.playerName); // Pass hostId and displayName
         games.set(newGameId, game);
         clientToGameMap.set(ws, newGameId);
+        // Use addPlayer for initial player as well to handle potential re-connections on game creation
         game.addPlayer(playerId, payload.playerName);
         ws.send(JSON.stringify({ type: 'gameCreated', payload: { gameId: newGameId, displayName: game.displayName } }));
         ws.send(JSON.stringify({ type: 'playerAssigned', payload: playerId }));
@@ -118,7 +119,8 @@ wss.on('connection', ws => {
       case 'joinGame':
         const targetGameId = payload.gameId;
         game = games.get(targetGameId);
-        if (game && !game.hasStarted && game.addPlayer(playerId, payload.playerName)) {
+        // Use addPlayer to handle re-connections for joining players
+        if (game && game.addPlayer(playerId, payload.playerName)) {
           clientToGameMap.set(ws, targetGameId);
           ws.send(JSON.stringify({ type: 'gameJoined', payload: { gameId: targetGameId, displayName: game.displayName } }));
           ws.send(JSON.stringify({ type: 'playerAssigned', payload: playerId }));
@@ -178,13 +180,8 @@ wss.on('connection', ws => {
     console.log(`Client ${playerId} disconnected`);
     const gameId = clientToGameMap.get(ws);
     if (gameId) {
-      // Handle player leaving game (e.g., remove player, end game if no players left)
-      // For simplicity, we'll just remove the client mapping for now.
+      // Do not remove player from game on disconnect to allow re-connection
       clientToGameMap.delete(ws);
-      // If a game becomes empty, you might want to delete it:
-      // if (games.get(gameId) && games.get(gameId).players.length === 0) {
-      //   games.delete(gameId);
-      // }
     }
     clientToPlayerIdMap.delete(ws);
   });

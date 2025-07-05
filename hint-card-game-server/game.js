@@ -28,6 +28,17 @@ class Game {
   }
 
   addPlayer(playerId, playerName) {
+    const existingPlayer = this.players.find(p => p.name === playerName);
+    if (existingPlayer) {
+        // If the reconnecting player was the current player, update currentPlayerId
+        if (this.currentPlayerId === existingPlayer.id) {
+            this.currentPlayerId = playerId; // Update to the new connection's ID
+        }
+        existingPlayer.id = playerId; // Update their connection ID
+        this._updateActivity();
+        return true; // Successfully reconnected
+    }
+
     if (this.players.length >= 5) {
       return false; // Max 5 players
     }
@@ -46,7 +57,14 @@ class Game {
     this.deck = this.createDeck();
     this.shuffleDeck();
     this.dealInitialHands();
-    this.currentPlayerId = this.players[0].id;
+
+    // Shuffle players to randomize turn order
+    for (let i = this.players.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.players[i], this.players[j]] = [this.players[j], this.players[i]];
+    }
+
+    this.currentPlayerId = this.players[0].id; // First player in the shuffled list starts
     this.hasStarted = true;
     this._updateActivity(); // Update activity on game start
     return true;
