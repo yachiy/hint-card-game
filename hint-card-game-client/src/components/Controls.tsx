@@ -16,7 +16,7 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
   const [hintType, setHintType] = React.useState<'suit' | 'rank' | null>(null);
   const [hintValue, setHintValue] = React.useState<string | number | null>(null);
 
-  const suits: Suit[] = ['red', 'green', 'blue', 'yellow', 'white'];
+  const suits: Suit[] = ['赤', '緑', '青', '黄', '白'];
   const ranks = [1, 2, 3, 4, 5];
 
   const handleGiveHintClick = () => {
@@ -53,7 +53,7 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
           <select value={hintValue || ''} onChange={(e) => setHintValue(e.target.value)}>
             <option value="">色を選択</option>
             {suits.map(suit => (
-              <option key={suit} value={suit}>{suit}</option>
+              <option key={suit} value={suit === '赤' ? 'red' : suit === '緑' ? 'green' : suit === '青' ? 'blue' : suit === '黄' ? 'yellow' : 'white'}>{suit}</option>
             ))}
           </select>
         )}

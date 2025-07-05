@@ -35,7 +35,7 @@ const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
     alignItems: 'center',
     margin: '8px',
     backgroundColor: isOwnHand ? '#666' : cardColors[card.suit],
-    color: isOwnHand ? 'white' : (card.suit === 'yellow' || card.suit === 'white' ? '#333' : 'white'),
+    color: isOwnHand ? 'white' : (card.suit === '黄' || card.suit === '白' ? '#333' : 'white'),
     cursor: isOwnHand ? 'pointer' : 'default',
     boxShadow: (card.hintedSuit || card.hintedRank) ? '0 0 12px 6px gold' : 'none',
     position: 'relative',
