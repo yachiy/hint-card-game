@@ -231,7 +231,7 @@ function App() {
               checked={useRainbow}
               onChange={(e) => setUseRainbow(e.target.checked)}
             />
-            <label>虹色カードを含める</label>
+            <label style={{ color: 'white' }}>虹色カードを含める</label>
           </div>
           <button onClick={handleCreateGame}>新しいゲームを作成</button>
         </div>
