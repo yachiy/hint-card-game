@@ -13,6 +13,7 @@ export const japaneseSuitNames: { [key: string]: string } = {
   blue: '青',
   yellow: '黄',
   white: '白',
+  rainbow: '虹',
 };
 
 const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
@@ -22,6 +23,7 @@ const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
     blue: '#0074D9',
     yellow: '#FFDC00',
     white: '#F0F0F0',
+    rainbow: 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)',
   };
 
   const cardStyle: React.CSSProperties = {
@@ -34,7 +36,7 @@ const Card: React.FC<CardProps> = ({ card, isOwnHand, isSelected }) => {
     justifyContent: 'space-between',
     alignItems: 'center',
     margin: '8px',
-    backgroundColor: isOwnHand ? '#666' : cardColors[card.suit],
+    background: isOwnHand ? '#666' : cardColors[card.suit],
     color: isOwnHand ? 'white' : (card.suit === '黄' || card.suit === '白' ? '#333' : 'white'),
     cursor: isOwnHand ? 'pointer' : 'default',
     boxShadow: (card.hintedSuit || card.hintedRank) ? '0 0 12px 6px gold' : 'none',

@@ -1,5 +1,5 @@
 
-export type Suit = '赤' | '緑' | '青' | '黄' | '白';
+export type Suit = '赤' | '緑' | '青' | '黄' | '白' | '虹';
 
 export interface Card {
   id: number;

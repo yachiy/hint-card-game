@@ -106,7 +106,7 @@ wss.on('connection', ws => {
     switch (type) {
       case 'createGame':
         const newGameId = `game-${nextGameId++}`;
-        game = new Game(newGameId, playerId, payload.playerName); // Pass hostId and displayName
+        game = new Game(newGameId, playerId, payload.playerName, payload.useRainbow); // Pass hostId, displayName, and useRainbow
         games.set(newGameId, game);
         clientToGameMap.set(ws, newGameId);
         // Use addPlayer for initial player as well to handle potential re-connections on game creation

@@ -1,15 +1,23 @@
-const suits = ['red', 'green', 'blue', 'yellow', 'white'];
 const ranks = [1, 1, 1, 2, 2, 3, 3, 4, 4, 5];
+const rainbowRanks = [1, 2, 3, 4, 5];
 
 class Game {
-  constructor(gameId, hostId, displayName) {
+  constructor(gameId, hostId, displayName, useRainbow = false) {
     this.displayName = displayName;
     this.gameId = gameId;
     this.hostId = hostId;
+    this.useRainbow = useRainbow;
     this.players = [];
     this.deck = [];
     this.discardPile = [];
-    this.playedCards = { red: 0, green: 0, blue: 0, yellow: 0, white: 0 };
+    this.suits = ['red', 'green', 'blue', 'yellow', 'white'];
+    if (this.useRainbow) {
+      this.suits.push('rainbow');
+    }
+    this.playedCards = this.suits.reduce((acc, suit) => {
+      acc[suit] = 0;
+      return acc;
+    }, {});
     this.hintTokens = 8;
     this.stormTokens = 3;
     this.currentPlayerId = null; // Game starts when enough players join
@@ -73,10 +81,16 @@ class Game {
   createDeck() {
     const deck = [];
     let idCounter = 0;
-    suits.forEach(suit => {
-      ranks.forEach(rank => {
-        deck.push({ id: idCounter++, suit, rank });
-      });
+    this.suits.forEach(suit => {
+      if (suit === 'rainbow') {
+        rainbowRanks.forEach(rank => {
+          deck.push({ id: idCounter++, suit, rank });
+        });
+      } else {
+        ranks.forEach(rank => {
+          deck.push({ id: idCounter++, suit, rank });
+        });
+      }
     });
     return deck;
   }
@@ -147,7 +161,7 @@ class Game {
   }
 
   checkWinCondition() {
-    const allSuitsPlayed = suits.every(suit => this.playedCards[suit] === 5);
+    const allSuitsPlayed = this.suits.every(suit => this.playedCards[suit] === 5);
     if (allSuitsPlayed) {
       this.isGameOver = true;
       this.isGameWon = true; // Set isGameWon to true on win

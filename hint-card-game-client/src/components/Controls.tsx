@@ -16,7 +16,7 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
   const [hintType, setHintType] = React.useState<'suit' | 'rank' | null>(null);
   const [hintValue, setHintValue] = React.useState<string | number | null>(null);
 
-  const suits: Suit[] = ['赤', '緑', '青', '黄', '白'];
+  const suits: Suit[] = ['赤', '緑', '青', '黄', '白', '虹'];
   const ranks = [1, 2, 3, 4, 5];
 
   const handleGiveHintClick = () => {

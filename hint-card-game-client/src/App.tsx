@@ -42,6 +42,7 @@ function App() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [useRainbow, setUseRainbow] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -182,7 +183,7 @@ function App() {
       alert('プレイヤー名を入力してください。');
       return;
     }
-    sendAction('createGame', { playerName });
+    sendAction('createGame', { playerName, useRainbow });
   };
 
   const handleJoinGame = () => {
@@ -224,6 +225,14 @@ function App() {
         </div>
         <div>
           <h2>ゲームを作成</h2>
+          <div>
+            <input
+              type="checkbox"
+              checked={useRainbow}
+              onChange={(e) => setUseRainbow(e.target.checked)}
+            />
+            <label>虹色カードを含める</label>
+          </div>
           <button onClick={handleCreateGame}>新しいゲームを作成</button>
         </div>
         <div>
