@@ -140,7 +140,7 @@ wss.on('connection', ws => {
         if (game) game.playCard(playerId, payload.cardId);
         break;
       case 'giveHint':
-        if (game) game.giveHint(payload.targetPlayerId, payload.hintType, payload.value);
+        if (game) game.giveHint(playerId, payload.targetPlayerId, payload.hintType, payload.value);
         break;
       case 'discardCard':
         if (game) game.discardCard(playerId, payload.cardId);

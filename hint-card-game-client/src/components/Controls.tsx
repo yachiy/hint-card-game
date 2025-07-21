@@ -1,5 +1,6 @@
 import React from 'react';
 import { Player, Suit } from '../types';
+import { japaneseSuitNames } from './Card';
 
 interface ControlsProps {
   onPlayCard: () => void;
@@ -16,8 +17,19 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
   const [hintType, setHintType] = React.useState<'suit' | 'rank' | null>(null);
   const [hintValue, setHintValue] = React.useState<string | number | null>(null);
 
-  const suits: Suit[] = ['赤', '緑', '青', '黄', '白', '虹'];
-  const ranks = [1, 2, 3, 4, 5];
+  const targetPlayer = players.find(p => p.id === hintTargetPlayerId);
+  const availableSuits: Suit[] = targetPlayer ? Array.from(new Set(targetPlayer.hand.map(card => card.suit))) : [];
+  const availableRanks = targetPlayer ? Array.from(new Set(targetPlayer.hand.map(card => card.rank))) : [];
+
+  React.useEffect(() => {
+    setHintType(null);
+    setHintValue(null);
+  }, [hintTargetPlayerId]);
+
+  React.useEffect(() => {
+    setHintValue(null);
+  }, [hintType]);
+
 
   const handleGiveHintClick = () => {
     if (hintTargetPlayerId !== null && hintType !== null && hintValue !== null && hintTokens > 0 && isMyTurn) {
@@ -44,7 +56,7 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
             <option key={player.id} value={player.id}>{player.name}</option>
           ))}
         </select>
-        <select value={hintType || ''} onChange={(e) => setHintType(e.target.value as 'suit' | 'rank')}>
+        <select value={hintType || ''} onChange={(e) => setHintType(e.target.value as 'suit' | 'rank')} disabled={!hintTargetPlayerId}>
           <option value="">ヒントの種類</option>
           <option value="suit">色</option>
           <option value="rank">数字</option>
@@ -52,15 +64,15 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
         {hintType === 'suit' && (
           <select value={hintValue || ''} onChange={(e) => setHintValue(e.target.value)}>
             <option value="">色を選択</option>
-            {suits.map(suit => (
-              <option key={suit} value={suit === '赤' ? 'red' : suit === '緑' ? 'green' : suit === '青' ? 'blue' : suit === '黄' ? 'yellow' : suit === '白' ? 'white' : 'rainbow'}>{suit}</option>
+            {availableSuits.map(suit => (
+              <option key={suit} value={suit}>{japaneseSuitNames[suit]}</option>
             ))}
           </select>
         )}
         {hintType === 'rank' && (
           <select value={hintValue || ''} onChange={(e) => setHintValue(Number(e.target.value))}>
             <option value="">数字を選択</option>
-            {ranks.map(rank => (
+            {availableRanks.sort((a, b) => a - b).map(rank => (
               <option key={rank} value={rank}>{rank}</option>
             ))}
           </select>

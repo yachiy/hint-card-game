@@ -170,22 +170,35 @@ class Game {
     }
   }
 
-  giveHint(hintTargetPlayerId, hintType, value) {
-    if (this.hintTokens === 0 || !this.hasStarted || this.isGameOver) return false;
+  giveHint(hintGiverId, hintTargetPlayerId, hintType, value) {
+    if (this.hintTokens === 0 || !this.hasStarted || this.isGameOver || this.currentPlayerId !== hintGiverId) return false;
+
+    const targetPlayer = this.players.find(p => p.id === hintTargetPlayerId);
+    if (!targetPlayer) return false;
+
+    // Validate that the hint is valid (i.e., at least one card matches)
+    const hintIsValid = targetPlayer.hand.some(card => {
+      if (hintType === 'suit') return card.suit === value;
+      if (hintType === 'rank') return card.rank === value;
+      return false;
+    });
+
+    if (!hintIsValid) {
+      // Optional: Send an error message back to the user
+      console.log(`[giveHint] Invalid hint from player ${hintGiverId}: No card matches the hint.`);
+      return false; // Stop if the hint is not valid
+    }
 
     this.hintTokens--;
 
-    const targetPlayer = this.players.find(p => p.id === hintTargetPlayerId);
-    if (targetPlayer) {
-      targetPlayer.hand = targetPlayer.hand.map(card => {
-        if (hintType === 'suit' && card.suit === value) {
-          return { ...card, hintedSuit: true };
-        } else if (hintType === 'rank' && card.rank === value) {
-          return { ...card, hintedRank: true };
-        }
-        return card;
-      });
-    }
+    targetPlayer.hand = targetPlayer.hand.map(card => {
+      if (hintType === 'suit' && card.suit === value) {
+        return { ...card, hintedSuit: true };
+      } else if (hintType === 'rank' && card.rank === value) {
+        return { ...card, hintedRank: true };
+      }
+      return card;
+    });
 
     this.nextTurn();
     this._updateActivity(); // Update activity on giveHint
