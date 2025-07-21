@@ -250,6 +250,9 @@ class Game {
   }
 
   getScore() {
+    if (this.gameEndReason === 'storm') {
+      return 0;
+    }
     let score = 0;
     for (const suit in this.playedCards) {
       score += this.playedCards[suit];
