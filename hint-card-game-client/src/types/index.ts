@@ -34,4 +34,5 @@ export interface GameState {
   deckWasEmpty: boolean;
   gameEndReason: 'win' | 'storm' | 'deck_empty_turns' | null;
   score: number;
+  lastAction: string | null;
 }

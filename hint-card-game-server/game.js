@@ -28,6 +28,7 @@ class Game {
     this.deckWasEmpty = false; // New: Flag if deck has become empty
     this.gameEndReason = null; // New: Reason for game ending (win, storm, deck_empty_turns)
     this.lastActivity = Date.now(); // Add lastActivity property
+    this.lastAction = null; // Add lastAction property
   }
 
   // Update lastActivity on any player action
@@ -127,6 +128,7 @@ class Game {
 
     if (this.playedCards[cardToPlay.suit] === cardToPlay.rank - 1) {
       this.playedCards[cardToPlay.suit]++;
+      this.lastAction = `${player.name}が${cardToPlay.suit}の${cardToPlay.rank}をプレイしました。`;
       console.log(`[playCard] Card ${cardToPlay.id} played successfully. New playedCards:`, this.playedCards);
       // Bonus: If a 5 card is played, restore a hint token
       if (cardToPlay.rank === 5) {
@@ -138,6 +140,7 @@ class Game {
     } else {
       this.stormTokens--;
       this.discardPile.push(cardToPlay);
+      this.lastAction = `${player.name}が${cardToPlay.suit}の${cardToPlay.rank}をプレイしましたが、失敗しました。`;
       console.log(`[playCard] Card ${cardToPlay.id} played incorrectly. Storm tokens remaining: ${this.stormTokens}`);
       if (this.stormTokens === 0) {
         this.isGameOver = true;
@@ -191,6 +194,10 @@ class Game {
 
     this.hintTokens--;
 
+    const hintGiver = this.players.find(p => p.id === hintGiverId);
+    const hintReceiver = this.players.find(p => p.id === hintTargetPlayerId);
+    this.lastAction = `${hintGiver.name}が${hintReceiver.name}に${hintType === 'suit' ? '色' : '数字'}のヒント（${value}）を出しました。`;
+
     targetPlayer.hand = targetPlayer.hand.map(card => {
       if (hintType === 'suit' && card.suit === value) {
         return { ...card, hintedSuit: true };
@@ -215,6 +222,7 @@ class Game {
     const cardToDiscard = player.hand[cardIndex];
 
     this.discardPile.push(cardToDiscard);
+    this.lastAction = `${player.name}がカードを1枚捨てました。`;
     if (this.hintTokens < 8) {
       this.hintTokens++;
     }
@@ -280,6 +288,7 @@ class Game {
       gameEndReason: this.gameEndReason, // Include in state
       score: this.getScore(), // Include score in state
       lastActivity: this.lastActivity, // Include lastActivity in state
+      lastAction: this.lastAction, // Include lastAction in state
     };
   }
 }

@@ -15,6 +15,7 @@ const GameInfo: React.FC<GameInfoProps> = ({ gameState }) => {
       <p>ヒントトークン: {gameState.hintTokens}</p>
       <p>ストームトークン: {gameState.stormTokens}</p>
       <p>山札の残り枚数: {gameState.deckSize}</p>
+      {gameState.lastAction && <p>最後のアクション: {gameState.lastAction}</p>}
       <div>
         <h5>プレイされたカード</h5>
         <div style={{ display: 'flex', gap: '10px' }}>
