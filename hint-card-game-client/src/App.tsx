@@ -312,6 +312,9 @@ function App() {
         <h1>Hint Card Game - {gameDisplayName} ({gameId})</h1>
         <h2>{gameOverMessage}</h2>
         <p>得点: {gameState.score}</p>
+        <div style={{ padding: '20px' }}>
+          <Board gameState={gameState} sendAction={sendAction} myPlayerId={myPlayerId} />
+        </div>
         {gameState && gameState.hostId === myPlayerId && (
           <button onClick={handleDisbandGame}>ゲームを解散</button>
         )}
