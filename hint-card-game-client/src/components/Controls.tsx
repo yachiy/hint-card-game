@@ -53,7 +53,7 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
           <select value={hintValue || ''} onChange={(e) => setHintValue(e.target.value)}>
             <option value="">色を選択</option>
             {suits.map(suit => (
-              <option key={suit} value={suit === '赤' ? 'red' : suit === '緑' ? 'green' : suit === '青' ? 'blue' : suit === '黄' ? 'yellow' : 'white'}>{suit}</option>
+              <option key={suit} value={suit === '赤' ? 'red' : suit === '緑' ? 'green' : suit === '青' ? 'blue' : suit === '黄' ? 'yellow' : suit === '白' ? 'white' : 'rainbow'}>{suit}</option>
             ))}
           </select>
         )}
