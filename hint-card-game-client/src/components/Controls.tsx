@@ -45,12 +45,15 @@ const Controls: React.FC<ControlsProps> = ({ onPlayCard, onGiveHint, onDiscardCa
   return (
     <div>
       <h4>操作</h4>
-      <button onClick={onPlayCard} disabled={!isMyTurn}>カードをプレイ</button>
+      <button onClick={onPlayCard} disabled={!isMyTurn || hintTargetPlayerId !== null}>カードをプレイ</button>
       <button onClick={handleGiveHintClick} disabled={isHintButtonDisabled}>ヒントを出す</button>
-      <button onClick={onDiscardCard} disabled={!isMyTurn}>カードを捨てる</button>
+      <button onClick={onDiscardCard} disabled={!isMyTurn || hintTargetPlayerId !== null}>カードを捨てる</button>
       <div>
         <h5>ヒント</h5>
-        <select value={hintTargetPlayerId || ''} onChange={(e) => setHintTargetPlayerId(Number(e.target.value))}>
+        <select value={hintTargetPlayerId || ''} onChange={(e) => {
+          const value = e.target.value;
+          setHintTargetPlayerId(value ? Number(value) : null);
+        }}>
           <option value="">ヒントを出す相手</option>
           {players.filter(p => p.id !== currentPlayerId).map(player => (
             <option key={player.id} value={player.id}>{player.name}</option>
